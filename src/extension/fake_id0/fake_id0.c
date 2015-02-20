@@ -653,10 +653,10 @@ static int handle_sysexit_end(Tracee *tracee, Config *config)
 		/* Override only if the file is owned by the current user.
 		 * Errors are not fatal here.  */
 		if (uid == getuid())
-			poke_uint32(tracee, address + offsetof_stat_uid(tracee), config->ruid);
+			poke_uint32(tracee, address + offsetof_stat_uid(tracee), config->euid);
 
 		if (gid == getgid())
-			poke_uint32(tracee, address + offsetof_stat_gid(tracee), config->rgid);
+			poke_uint32(tracee, address + offsetof_stat_gid(tracee), config->egid);
 
 		return 0;
 	}
@@ -787,11 +787,11 @@ int fake_id0_callback(Extension *extension, ExtensionEvent event, intptr_t data1
 
 		config = talloc_get_type_abort(extension->config, Config);
 		config->ruid  = uid;
-		config->euid  = uid;
+		config->euid  = 0; //uid;
 		config->suid  = uid;
 		config->fsuid = uid;
 		config->rgid  = gid;
-		config->egid  = gid;
+		config->egid  = 0; //gid;
 		config->sgid  = gid;
 		config->fsgid = gid;
 
